@@ -9,7 +9,9 @@ app.use(cors({
     origin : '*'
 })) ;
 
-app.post('/save' ,User.savedata ) ;
+app.post('/save' , User.savedata ) ;
+app.get('/getdata' , User.GetData ) ;
+app.post('/login' , User.postLoginData) ;
 
 (
     async ()=>{
