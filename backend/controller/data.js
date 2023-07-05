@@ -11,7 +11,7 @@ exports.savedata = async (req , res , next)=>{
             const data =  await User.create({
                  name ,
                  email ,
-                 password
+                 password : hash
              })
              res.status(201).json({detail:data}) ;
 
@@ -40,15 +40,31 @@ exports.postLoginData = async (req , res , next) =>{
      console.log("ans is " +email) ;
     
     const reqdata = await User.findAll({where : {email}}) ;
-    if ( !reqdata) {
-         res.status(404).json({error : "user not found"})
+    console.log(reqdata) ;
+    if ( reqdata.length==0) {
+        return res.status(404).json({ success : false, messege : "user not found"})
     }
     if(reqdata.length>0) {
-        if(await reqdata[0].password !== password) {
-            res.status(400).json({error : "incorrect password"}) ;
-   
+       bcrypt.compare( password , reqdata[0].password , (err , result)=>{
+            console.log(password +"main") ;
+            console.log(reqdata[0].password) ;
+            if(err) {
+                console.log(err) ;
+                return res.status(500).json({messege : "something went wrong"})
+            }
+            if(result=== false)
+            {
+                console.log(result) ;
+ 
+              return res.status(401).json({success :false, messege : "incorrect password"})
+            }
+                   else { 
+                    console.log("true") ;
+        return res.status(200).json({success : true , messege : "user logged succesfully"})
        }
-       res.status(201).json({messege : "user logged succesfully"})
+        })
+
+       
        }
     }
     
