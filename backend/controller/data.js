@@ -1,5 +1,13 @@
 const User = require('../model/database') ;
 const bcrypt = require('bcrypt') ;
+const jwt = require('jsonwebtoken') ;
+
+function generateaccesstoken(id) {
+    return jwt.sign({ userId : id} , 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c')
+}
+// exports.getlogindata = async(req , res , next)=>{
+//     return res.status(200).json({ token: generateaccesstoken(reqdata[0].id)})
+//}
 
 exports.savedata = async (req , res , next)=>{
     try {
@@ -60,7 +68,7 @@ exports.postLoginData = async (req , res , next) =>{
             }
                    else { 
                     console.log("true") ;
-        return res.status(200).json({success : true , messege : "user logged succesfully"})
+        return res.status(200).json({success : true , messege : "user logged succesfully" , token: generateaccesstoken(reqdata[0].id)})
        }
         })
 

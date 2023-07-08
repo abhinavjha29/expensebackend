@@ -12,6 +12,7 @@ app.use(cors({
 app.post('/save' , User.savedata ) ;
 app.get('/getdata' , User.GetData ) ;
 app.post('/login' , User.postLoginData) ;
+//app.get('/login' , User.getlogindata) ;
 
 (
     async ()=>{

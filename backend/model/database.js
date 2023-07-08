@@ -32,6 +32,9 @@ validate: {
   }
     }
 
+} 
+, {
+  tableName : "user_detail"
 })
 
 module.exports = User ;
