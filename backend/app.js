@@ -2,17 +2,28 @@ const Express = require('express') ;
 const bodyparser = require('body-parser') ;
 const cors = require('cors') 
 const sequelize = require('./util/table')
-const User = require('./controller/data')
+const User = require('./controller/usercontroller') ;
+const expenseroute = require('./router/expenseroute')
+const userroute = require('./router/userroute') ;
+const orderroute = require('./router/premiumroute')
+const expmodel = require('./model/expensemodel') ;
+const usermodel = require('./model/userdetail') ;
+const ordermodel = require('./model/order') ;
 const app = Express() ;
 app.use(bodyparser.json()) ;
 app.use(cors({
     origin : '*'
 })) ;
 
-app.post('/save' , User.savedata ) ;
-app.get('/getdata' , User.GetData ) ;
-app.post('/login' , User.postLoginData) ;
-//app.get('/login' , User.getlogindata) ;
+
+app.use('/expense' , expenseroute) ;
+app.use('/user' , userroute) ;
+app.use('/premium' ,orderroute ) ;
+usermodel.hasMany(expmodel) ;
+expmodel.belongsTo(usermodel) ;
+
+usermodel.hasMany(ordermodel) ;
+ordermodel.belongsTo(usermodel) ;
 
 (
     async ()=>{

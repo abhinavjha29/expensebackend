@@ -21,7 +21,9 @@
 // }
 
 const btn = document.getElementById('btn-primary') ;
+const signupbtn = document.getElementById('signup') ;
 btn.addEventListener('click' ,savelogindetail) ;
+signupbtn.addEventListener('click' , signuppage) ;
 
 async function savelogindetail(e) {
     e.preventDefault() ;
@@ -32,10 +34,14 @@ const password = document.getElementById('password').value ;
      email,
      password
  }
-const response = await axios.post('http://localhost:3800/login',logindetail) ;
+const response = await axios.post('http://localhost:3800/user/login',logindetail) ;
 if(response.status==200) {
-   alert(response.data.messege) ;
-    window.location.href = "http://127.0.0.1:5500/frontend/" ;
+   
+    localStorage.setItem('token' , response.data.token) ;
+     console.log("token store", response.data.token )
+     alert(response.data.messege) ;
+     
+    window.location.href = 'http://127.0.0.1:5501/frontend/expense.html' ;
 }
 else {
     throw new Error(response.data.messege) ;
@@ -43,7 +49,14 @@ else {
 
     }
     catch(err) {
-        alert(err.response.data.messege) ;
         console.log(err) ;
+        alert(err.response.data.messege) ;
+        
     }
 }
+
+async function signuppage(e) {
+    e.preventDefault() ;
+    window.location.href = 'http://127.0.0.1:5501/frontend/index.html'
+}
+
