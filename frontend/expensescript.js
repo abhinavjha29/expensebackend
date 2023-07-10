@@ -3,16 +3,18 @@ function selectOption(option) {
     document.getElementById('myInput').value = option;
   }
   showdetails()
-function showdetails() {
+  
+  function showdetails() {
 
   window.addEventListener("DOMContentLoaded", async () => {
     try {
+      chekcpremium()
       const token =  localStorage.getItem('token') ;
 console.log("Token:", token); 
 //const tokendata = await axios.get("http://localhost:3800/login")
     //  token = tokendata.data.token ;
       const response = await axios.get("http://localhost:3800/expense/getexpense" , {headers : {"Authorization" : token} });
-      console.log("hello")
+      
       for (let i = 0; i < response.data.details.length; i++) {
         showexpensedetail(response.data.details[i]);
       
@@ -100,27 +102,104 @@ else {
 prembtn.addEventListener('click' , premiummembership) ;
 
 async function  premiummembership(e) {
-e.preventDefault() ;
-const token = localStorage.getItem('token') ;
-const response = await axios.get('http://localhost/3800/premium/premmembership' , { headers : {"Authorization" : token}})
-console.log(response) ;
-const options = {
-"key" : response.data.key_id ,
-"orderid" : response.data.order.id ,
-"handler" : async function (response) {
-  await axios.post('/', {
-    order_id : options.order_id , 
-    payment_id : response.razorpay_payment_id , 
-  } , { headers : {"Authorization" : token}} ) 
-  alert("Your are a premium User")
-}
-}
+  try {
+    e.preventDefault() ;
+    const token = localStorage.getItem('token') ;
+    console.log("check1")
+    const response = await axios.get('http://localhost:3800/premium/premiummembership' , { headers : {"Authorization" : token}})
+    console.log(response) ;
+    const options = {
+    "key" : response.data.key_id ,
+    "order_id" : response.data.order.id ,
+    "handler" : async function (response) {
+    const resp =   await axios.post('http://localhost:3800/premium/updatestatus', {
+        order_id : options.order_id , 
+        payment_id : response.razorpay_payment_id , 
+      } , { headers : {"Authorization" : token}} )
+      if(resp) {
+        alert("Your are a premium User") ;
+        prembtn.remove() ;
+        showpremium() ;
+      }
+      
+    }
+    }
+    
+    const rzpl = new Razorpay(options) ;
+    rzpl.open() ;
+    e.preventDefault() ;
+    rzpl.on('payment failed' , function (response){
+      console.log(response) ;
+      alert("something went wrong") ;
+    })
+    }
+    catch (err) {
+      console.log(err) ;
+    }
+  }
 
-const rzpl = new RazorPay(options) ;
-rzpl.open() ;
-e.preventDefault() ;
-rzpl.on('payment failed' , function (response){
-  console.log(response) ;
-  alert("something went wrong") ;
-})
-}
+  async function showpremium() {
+    const premdiv = document.getElementById('premiumdiv') 
+    const li = document.createElement('li') ;
+    li.appendChild(document.createTextNode("You are a premium User"))
+    premdiv.appendChild(li) ;
+  }
+
+  async function chekcpremium() {
+    try {
+      const token = localStorage.getItem('token') ;
+      const email = localStorage.getItem('email')
+      console.log("checkpremium")
+      const user = await axios.get('http://localhost:3800/user/get' , { headers : {"Authorization" : token}}) ;
+      for(let i =0 ;i<user.data.getdata.length ; i++) {
+        console.log("user is"+JSON.stringify(user.data.getdata[i].email))
+        if(user.data.getdata[i].email==email) {
+          console.log("prem is "+JSON.stringify(user.data.getdata[i].ispremium))
+          if(user.data.getdata[i].ispremium==true) {
+            prembtn.remove() ;
+        showpremium() ;
+        showleaderboard() ;
+          }
+        }
+      }
+      
+    }
+    catch(err) {
+      console.log(err) ;
+    }
+   
+  }
+
+  async function showleaderboard() {
+const token = localStorage.getItem('token') ;
+    const leaderboardbtn = document.createElement('input') ;
+    leaderboardbtn.type = 'Button' ;
+    leaderboardbtn.value = 'Show LeaderBoard' ;
+    const premdiv = document.getElementById('premiumdiv') 
+    premdiv.appendChild(leaderboardbtn) ;
+
+    leaderboardbtn.addEventListener('click' , async (e)=>{
+      try {
+        e.preventDefault() ;
+        const res = await axios.get('http://localhost:3800/premfeature/leaderboard' ,{ headers : {"Authorization" : token}} )
+        const li = document.createElement('li') ;
+        const premdiv = document.getElementById('premiumdiv') 
+        li.className = 'list-group-item'
+        const ul = document.createElement('ul') ;
+
+        console.log(res.data) ;
+        res.data.user_det.forEach(detail => {
+          li.appendChild(document.createTextNode("name==> "+detail.name+" expense is ==> "+detail.total_expense))
+          premdiv.appendChild(li) ; ;
+        });
+      } 
+      catch (err) {
+        console.log(err) ;
+      }
+    }
+    
+    )
+  
+
+  }
+

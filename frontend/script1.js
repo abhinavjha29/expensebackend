@@ -36,9 +36,12 @@ const password = document.getElementById('password').value ;
  }
 const response = await axios.post('http://localhost:3800/user/login',logindetail) ;
 if(response.status==200) {
+  
    
     localStorage.setItem('token' , response.data.token) ;
-     console.log("token store", response.data.token )
+    localStorage.setItem('email' , email) ;
+    // console.log("token store", response.data.token ) ;
+    // console.log("premium" , getuser.data.ispremium) ;
      alert(response.data.messege) ;
      
     window.location.href = 'http://127.0.0.1:5501/frontend/expense.html' ;

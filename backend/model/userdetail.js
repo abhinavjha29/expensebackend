@@ -30,7 +30,8 @@ validate: {
       msg: 'Please enter your password'
     }
   }
-    }
+    } ,
+    ispremium : Sequelize.BOOLEAN
 
 } 
 , {

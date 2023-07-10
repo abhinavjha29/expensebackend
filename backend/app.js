@@ -5,7 +5,8 @@ const sequelize = require('./util/table')
 const User = require('./controller/usercontroller') ;
 const expenseroute = require('./router/expenseroute')
 const userroute = require('./router/userroute') ;
-const orderroute = require('./router/premiumroute')
+const orderroute = require('./router/premiumroute') ;
+const premiumfeature = require('./router/premfeatureroute') ;
 const expmodel = require('./model/expensemodel') ;
 const usermodel = require('./model/userdetail') ;
 const ordermodel = require('./model/order') ;
@@ -19,6 +20,7 @@ app.use(cors({
 app.use('/expense' , expenseroute) ;
 app.use('/user' , userroute) ;
 app.use('/premium' ,orderroute ) ;
+app.use('/premfeature' , premiumfeature) ;
 usermodel.hasMany(expmodel) ;
 expmodel.belongsTo(usermodel) ;
 

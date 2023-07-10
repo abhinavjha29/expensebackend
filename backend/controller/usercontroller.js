@@ -17,6 +17,7 @@ exports.savedata = async (req , res , next)=>{
         const salt = 10 ;
         bcrypt.hash(password , salt , async (err , hash)=>{
             const data =  await User.create({
+                ispremium , 
                  name ,
                  email ,
                  password : hash
@@ -34,8 +35,10 @@ exports.savedata = async (req , res , next)=>{
 
 exports.GetData = async (req , res, next)=>{
     try {
+     
         const users = await User.findAll() 
         res.status(200).json({getdata : users}) ;
+
     }
     catch(err) {
         console.log(err) ;
@@ -48,7 +51,7 @@ exports.postLoginData = async (req , res , next) =>{
      console.log("ans is " +email) ;
     
     const reqdata = await User.findAll({where : {email}}) ;
-    console.log(reqdata) ;
+    //console.log(reqdata) ;
     if ( reqdata.length==0) {
         return res.status(404).json({ success : false, messege : "user not found"})
     }

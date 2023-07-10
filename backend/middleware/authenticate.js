@@ -9,6 +9,7 @@ console.log("userid>>>>"+user.userId )
 const response =  await User.findByPk(user.userId) ;
 
 req.user = response ;
+console.log("hey"+req.user) ;
 next() ;
     }
     catch(err) {

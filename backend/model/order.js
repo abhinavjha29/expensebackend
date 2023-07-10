@@ -1,16 +1,16 @@
-const Sequlize = require('sequelize') ;
-const sequlize = require('../util/table') ;
+const Sequelize = require('sequelize') ;
+const sequelize = require('../util/table') ;
 
-const Order = sequlize.define('order' , {
+const Order = sequelize.define('order' , {
     id : {
         type : Sequelize.INTEGER ,
         autoIncrement : true ,
         allowNull : false ,
         primaryKey : true 
     } ,
-    paymentid : Sequlize.STRING ,
-    orderid : Sequlize.STRING ,
-    status : Sequlize.STRING
+    paymentid : Sequelize.STRING ,
+    orderid : Sequelize.STRING ,
+    status : Sequelize.STRING
 } ,
 {
     tableName : 'razorpayorder'
