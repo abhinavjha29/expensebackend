@@ -17,7 +17,7 @@ exports.savedata = async (req , res , next)=>{
         const salt = 10 ;
         bcrypt.hash(password , salt , async (err , hash)=>{
             const data =  await User.create({
-                ispremium , 
+            
                  name ,
                  email ,
                  password : hash

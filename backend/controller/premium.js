@@ -5,8 +5,8 @@ const Order = require('../model/order') ;
 try {
    
 const rzp = new Razorpay({
-    key_id :  'rzp_test_o5ePPyWzJjBmF4' ,
-    key_secret :  'x6x1PgSTNbVewY7iu76THqnZ'
+    key_id : process.env.RAZORPAY_KEY_ID , 
+    key_secret : process.env.RAZORPAY_KEY_SECRET ,  
 
 })
 const amount = 2500 ;

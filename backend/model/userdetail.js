@@ -32,7 +32,11 @@ validate: {
   }
     } ,
     ispremium : Sequelize.BOOLEAN
-
+,
+total_exp : {
+  type : Sequelize.INTEGER ,
+  defaultValue : 0 ,
+}
 } 
 , {
   tableName : "user_detail"
