@@ -1,12 +1,14 @@
 const Express = require('express') ;
 const bodyparser = require('body-parser') ;
 const cors = require('cors') 
+require('dotenv').config() ;
 const sequelize = require('./util/table')
-const User = require('./controller/usercontroller') ;
+
 const expenseroute = require('./router/expenseroute')
 const userroute = require('./router/userroute') ;
 const orderroute = require('./router/premiumroute') ;
 const premiumfeature = require('./router/premfeatureroute') ;
+const forgotpass = require('./router/forgotpass') ;
 const expmodel = require('./model/expensemodel') ;
 const usermodel = require('./model/userdetail') ;
 const ordermodel = require('./model/order') ;
@@ -21,6 +23,7 @@ app.use('/expense' , expenseroute) ;
 app.use('/user' , userroute) ;
 app.use('/premium' ,orderroute ) ;
 app.use('/premfeature' , premiumfeature) ;
+app.use('/password' , forgotpass) ;
 usermodel.hasMany(expmodel) ;
 expmodel.belongsTo(usermodel) ;
 

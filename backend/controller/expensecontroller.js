@@ -50,7 +50,7 @@ exports.getData = async (req , res , next)=>{
 
 exports.deletedata = async(req , res ,next)=>{
     try {
-        
+        const t = await sequelize.transaction() ;
 const data_id = req.params.id ;
 console.log(req.user.id) ;
 const resp = await Expense.findAll({where : {userId : req.user.id}}) 
@@ -58,16 +58,32 @@ const resp = await Expense.findAll({where : {userId : req.user.id}})
 if(resp) 
 {
 
-    const result = await Expense.findByPk(data_id) ;
-    await result.destroy()
+    const result = await Expense.findByPk(data_id , {transaction : t}) ;
+    console.log(result.price) ;
+    const total_exp = Number(req.user.total_exp) - Number(result.price) ;
+    await result.destroy({transaction: t})
+   
+    await User.update({
+        total_exp : total_exp  }
+        , {
+            where : {id : req.user.id}  ,
+            transaction : t
+        }
+        )
+        await t.commit() ; 
     return res.status(200).json({delete:result , messege : "expense deleted succesfylly"}) ;
 }
 else return res.status(404).json({
     messege: "user not found"
 })
+.catch(err=>{
+    console.log(err) ;
+    t.rollback()
+})
  
     }
     catch(err) {
+        //t.rollback() ;
         console.log(err) ;
     }
 }
