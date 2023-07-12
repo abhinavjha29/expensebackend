@@ -62,4 +62,10 @@ async function signuppage(e) {
     e.preventDefault() ;
     window.location.href = 'http://127.0.0.1:5501/frontend/index.html'
 }
+const forgotbtn = document.getElementById('forgotpass') ;
+  forgotbtn.addEventListener('click' , async(e)=>{
+    console.log(forgotbtn) ;
+    e.preventDefault() ;
+    window.location.href = 'http://127.0.0.1:5501/frontend/forgotpass.html' ;
+  })
 

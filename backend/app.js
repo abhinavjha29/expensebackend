@@ -1,7 +1,7 @@
 const Express = require('express') ;
 const bodyparser = require('body-parser') ;
 const cors = require('cors') 
-require('dotenv').config() ;
+//require('dotenv').config() ;
 const sequelize = require('./util/table')
 
 const expenseroute = require('./router/expenseroute')
@@ -12,6 +12,12 @@ const forgotpass = require('./router/forgotpass') ;
 const expmodel = require('./model/expensemodel') ;
 const usermodel = require('./model/userdetail') ;
 const ordermodel = require('./model/order') ;
+const Forgotpassword = require('./model/forgotpasswordmodel') ;
+const dotenv = require('dotenv');
+
+
+dotenv.config();
+
 const app = Express() ;
 app.use(bodyparser.json()) ;
 app.use(cors({
@@ -26,6 +32,10 @@ app.use('/premfeature' , premiumfeature) ;
 app.use('/password' , forgotpass) ;
 usermodel.hasMany(expmodel) ;
 expmodel.belongsTo(usermodel) ;
+usermodel.hasMany(Forgotpassword);
+Forgotpassword.belongsTo(usermodel);
+
+
 
 usermodel.hasMany(ordermodel) ;
 ordermodel.belongsTo(usermodel) ;

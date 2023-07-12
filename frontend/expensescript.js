@@ -58,32 +58,65 @@ axios.post('http://localhost:3800/expense/postexpense' , user_data, {headers : {
   function showexpensedetail(details) {
     //let items = document.getElementById('item') ;
    
-    const li = document.createElement('li') ;
-    li.className = 'list-group-item' ;
-    li.appendChild(document.createTextNode("category->"+details.category+ "--desc ->"+details.description +"-- amount ->"+details.price))
-    item.appendChild(li) ;
-//console.log(details.id) ;
-    //delet btn 
-    const deletebtn = document.createElement('button') ;
-    deletebtn.style.background = "red" ;
-deletebtn.className = 'list-del-btn' ;
-deletebtn.id = details.id ;
-deletebtn.appendChild(document.createTextNode("DEL")) ;
+//     const li = document.createElement('li') ;
+//     li.className = 'list-group-item' ;
+//     li.appendChild(document.createTextNode("category->"+details.category+ "--desc ->"+details.description +"-- amount ->"+details.price))
+//     item.appendChild(li) ;
+// //console.log(details.id) ;
+//     //delet btn 
+//     const deletebtn = document.createElement('button') ;
+//     deletebtn.style.background = "red" ;
+// deletebtn.className = 'list-del-btn' ;
+// deletebtn.id = details.id ;
+// deletebtn.appendChild(document.createTextNode("DEL")) ;
 
-li.appendChild(deletebtn) ;
+// li.appendChild(deletebtn) ;
 //item.appendChild(li) ;
+const li = document.createElement('li');
+  li.className = 'list-group-item d-flex justify-content-between align-items-center';
 
-let del = document.getElementById(deletebtn.id) ;
+  const contentWrapper = document.createElement('div');
+  const category = document.createElement('span');
+  category.className = 'fw-bold';
+  category.appendChild(document.createTextNode('Category: ' + details.category));
+  contentWrapper.appendChild(category);
+
+  const description = document.createElement('p');
+  description.className = 'mb-0';
+  description.appendChild(document.createTextNode('Description: ' + details.description));
+  contentWrapper.appendChild(description);
+
+  const amount = document.createElement('span');
+  amount.className = 'fw-bold';
+  amount.appendChild(document.createTextNode('Amount: ' + details.price));
+  contentWrapper.appendChild(amount);
+
+  li.appendChild(contentWrapper);
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.className = 'btn btn-danger btn-sm del-btn';
+  deleteBtn.id = details.id;
+  deleteBtn.appendChild(document.createTextNode('Delete'));
+
+  li.appendChild(deleteBtn);
+
+  item.appendChild(li);
+
+
+let del = document.getElementById(deleteBtn.id) ;
+console.log(del) ;
 
 del.addEventListener('click' , async(e)=>{
   //e.preventDefault() ;
-  if(e.target.classList.contains('list-del-btn')) {
+  if(e.target.classList.contains('del-btn')) {
     try {
+      console.log(document.getElementsByClassName("btn btn-danger btn-sm"))
       const token =  localStorage.getItem('token') ;
 const res = await axios.delete(`http://localhost:3800/expense/deleteexpense/${e.target.id}` , {headers : {"Authorization" : token} }) 
 if (res.status==200) {
   console.log('deleted succesfully')
-  li.remove() ;
+ li.remove() ; 
+showleaderboard() ;
 }
 else {
   alert(res.data.messege)
@@ -96,6 +129,8 @@ else {
   }
 })
   }
+
+  
 
   let prembtn = document.getElementById('premium') ;
 
@@ -118,8 +153,9 @@ async function  premiummembership(e) {
       } , { headers : {"Authorization" : token}} )
       if(resp) {
         alert("Your are a premium User") ;
+        await showpremium() ;
         prembtn.remove() ;
-        showpremium() ;
+       
       }
       
     }
@@ -173,32 +209,84 @@ async function  premiummembership(e) {
   async function showleaderboard() {
 const token = localStorage.getItem('token') ;
     const leaderboardbtn = document.createElement('input') ;
+    leaderboardbtn.id = 'leaderboardbtn' ;
     leaderboardbtn.type = 'Button' ;
     leaderboardbtn.value = 'Show LeaderBoard' ;
     const premdiv = document.getElementById('premiumdiv') 
     premdiv.appendChild(leaderboardbtn) ;
 
-    leaderboardbtn.addEventListener('click' , async (e)=>{
-      try {
-        e.preventDefault() ;
-        const res = await axios.get('http://localhost:3800/premfeature/leaderboard' ,{ headers : {"Authorization" : token}} )
-        const li = document.createElement('li') ;
-        const premdiv = document.getElementById('premiumdiv') 
-        li.className = 'list-group-item'
-        const ul = document.createElement('ul') ;
+    // leaderboardbtn.addEventListener('click' , async (e)=>{
+    //   try {
+    //     e.preventDefault() ;
+    //     const res = await axios.get('http://localhost:3800/premfeature/leaderboard' ,{ headers : {"Authorization" : token}} )
+        
+    //     const premdiv = document.getElementById('premiumdiv') 
+       
+        
 
-        console.log(res.data) ;
-        res.data.user_det.forEach(detail => {
-          li.appendChild(document.createTextNode("name==> "+detail.name+" expense is ==> "+detail.total_expense))
-          premdiv.appendChild(li) ; ;
-        });
-      } 
-      catch (err) {
-        console.log(err) ;
-      }
-    }
+    //     console.log(res.data) ;
+    //     res.data.user_det.forEach(detail => {
+    //       const li = document.createElement('li') ; 
+    //       li.appendChild(document.createTextNode("name==> "+detail.name+" expense is ==> "+detail.total_exp))
+        
+    //       premdiv.appendChild(li) ; ;
+    //     });
+    //   } 
+    //   catch (err) {
+    //     console.log(err) ;
+    //   }
+    // }
     
-    )
+    // )
+    leaderboardbtn.addEventListener('click', async (e) => {
+      try {
+        e.preventDefault();
+        const res = await axios.get('http://localhost:3800/premfeature/leaderboard', { headers: {"Authorization": token}});
+    
+        const premdiv = document.getElementById('premiumdiv');
+        const table = document.createElement('table');
+        table.classList.add('table', 'table-bordered');
+    
+        const thead = document.createElement('thead');
+        const trHead = document.createElement('tr');
+    
+        const thName = document.createElement('th');
+        thName.scope = 'col';
+        thName.appendChild(document.createTextNode('Name'));
+    
+        const thExpense = document.createElement('th');
+        thExpense.scope = 'col';
+        thExpense.appendChild(document.createTextNode('Expense'));
+    
+        trHead.appendChild(thName);
+        trHead.appendChild(thExpense);
+        thead.appendChild(trHead);
+        table.appendChild(thead);
+    
+        const tbody = document.createElement('tbody');
+        res.data.user_det.forEach(detail => {
+          const tr = document.createElement('tr');
+          const tdName = document.createElement('td');
+          tdName.appendChild(document.createTextNode(detail.name));
+    
+          const tdExpense = document.createElement('td');
+          tdExpense.appendChild(document.createTextNode(detail.total_exp));
+    
+          tr.appendChild(tdName);
+          tr.appendChild(tdExpense);
+          tbody.appendChild(tr);
+        });
+    
+        table.appendChild(tbody);
+        premdiv.appendChild(table);
+        const leaderbtn = document.getElementById('leaderboardbtn') ;
+        leaderboardbtn.remove() ;
+        
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    
   
 
   }
