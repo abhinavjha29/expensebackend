@@ -1,4 +1,4 @@
-const Sib = require('sib-api-v3-sdk') ;
+const Sib = require('@getbrevo/brevo') ;
  require('dotenv').config() ;
  console.log("key is " +process.env.SMTP_KEY_ID) ;
 const client = Sib.ApiClient.instance

@@ -1,8 +1,62 @@
 const Expense = require('../model/expensemodel') ;
 const User = require('../model/userdetail') ;
 const sequelize = require('../util/table') ;
+const AWS = require('aws-sdk') ;
 
-exports.postData = async (req , res , next)=>{
+ async function  uploadtos3(data , filename) {
+const BUCKET_NAME = process.env.BUCKET_NAME
+const IAM_USER_KEY =process.env.IAM_USER_KEY
+const IAM_SECRET_KEY =process.env.IAM_SECRET_KEY 
+
+let s3bucket = new AWS.S3({
+    accessKeyId : IAM_USER_KEY ,
+    secretAccessKey : IAM_SECRET_KEY ,
+
+})
+
+    let params = {
+        Bucket: BUCKET_NAME,
+        Key: filename,
+        Body: data ,
+        ACL : 'public-read'
+    } 
+    return new Promise ((resolve , reject)=>{
+        s3bucket.upload(params , (err , s3res)=>{
+            if(err) {
+                console.log("something wromng" , err)
+          reject(err) ;
+            }
+            else {
+                console.log("succes=>  " , s3res) ;
+                resolve (s3res.Location) ;
+            }
+    
+        })
+        
+    })
+    
+
+
+}
+
+const postFile = async (req , res , next)=> {
+try {
+    
+const expenses = await  Expense.findAll({where : {userId : req.user.id}}) ;
+const userId = req.user.id ;
+ const stringifiedexp = JSON.stringify(expenses)
+  const filename = `Expenses${userId}/${new Date()}.txt` ;
+  const fileURL = await uploadtos3(stringifiedexp , filename) ;
+  console.log(fileURL+ "fileurl") ;
+  return res.status(200).json({fileURL , success : "true"}) ;
+}
+catch(err) {
+    res.status(500).json({fileURL : null , success : "false" , messege : "ERROR 500"})
+    console.log(err) ;
+}
+}
+
+const postData = async (req , res , next)=>{
     try {
         const t = await sequelize.transaction() ;
         const category = req.body.category ;
@@ -36,11 +90,11 @@ catch(error) {
 }
 }
 
-exports.getData = async (req , res , next)=>{
+ const getData = async (req , res , next)=>{
     try { const users = await Expense.findAll({where : {userId : req.user.id}}) ;
-        console.log("users are"+users) ;
-        res.status(200).json({details : users})
-        
+       console.log("users are"+users) ;
+       res.status(200).json({details : users})
+        return users ;
     }
     catch(err) {
         console.log(err) ;
@@ -48,7 +102,7 @@ exports.getData = async (req , res , next)=>{
     }
 }
 
-exports.deletedata = async(req , res ,next)=>{
+const deletedata = async(req , res ,next)=>{
     try {
         const t = await sequelize.transaction() ;
 const data_id = req.params.id ;
@@ -86,4 +140,10 @@ else return res.status(404).json({
         //t.rollback() ;
         console.log(err) ;
     }
+}
+
+module.exports = {
+ getData , deletedata 
+ , postData , postFile
+
 }

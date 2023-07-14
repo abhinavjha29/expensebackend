@@ -9,5 +9,6 @@ router.post('/postexpense' , auth.authenticate, expense.postData) ;
 router.get('/getexpense' , auth.authenticate ,expense.getData) ;
 
 router.delete('/deleteexpense/:id', auth.authenticate , expense.deletedata) ; 
+router.get('/download' , auth.authenticate , expense.postFile  ) ;
 
 module.exports = router ;

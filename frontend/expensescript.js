@@ -287,7 +287,31 @@ const token = localStorage.getItem('token') ;
       }
     });
     
-  
+  }
+  const filebtn = document.getElementById('file') ;
+  filebtn.addEventListener('click' , downloadFile)
+
+async function downloadFile(e) {
+  try {
+    e.preventDefault() ;
+const token = localStorage.getItem('token') ;
+const response = await axios.get('http://localhost:3800/expense/download' , { headers: {"Authorization": token}})
+if (response.status==200) {
+  console.log(response) ;
+const a = document.createElement('a') ;
+a.href = response.data.fileURL ;
+a.download = 'myexpense.csv' ;
+a.click()
+}
+else {
+  console.log(err) ;
+  throw new Error(response.data.messege)
+}
 
   }
+  catch(err) {
+    console.log(err) ;
+  }
 
+
+}
