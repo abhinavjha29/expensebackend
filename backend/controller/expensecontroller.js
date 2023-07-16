@@ -91,15 +91,37 @@ catch(error) {
 }
 
  const getData = async (req , res , next)=>{
-    try { const users = await Expense.findAll({where : {userId : req.user.id}}) ;
-       console.log("users are"+users) ;
-       res.status(200).json({details : users})
-        return users ;
+    try { 
+        console.log(req.query) ;
+       const page = Number(req.query.page); // Current page number
+        
+       const limit =  3; // Number of expenses per page
+       
+        console.log(page)
+   
+        const offset = (page) * limit;
+        
+        const expenses = await Expense.findAll({where : {userId : req.user.id} ,
+        offset ,
+        limit 
+        }) ;
+        
+    //const lastpage = Math.ceil(totalitems / limit);
+      
+      res.status(200).json({details : expenses })
+      
+    console.log(req.query.page) ;
     }
     catch(err) {
         console.log(err) ;
+        return res.status(500).json({messege : "Error retriving expense"})
         //alert("error showing data")
     }
+}
+
+const usertotaldata = async(req , res )=>{
+    const totalitems = await Expense.count({where : {userId : req.user.id}})
+res.json({totalexp : totalitems})
 }
 
 const deletedata = async(req , res ,next)=>{
@@ -145,5 +167,5 @@ else return res.status(404).json({
 module.exports = {
  getData , deletedata 
  , postData , postFile
-
+, usertotaldata
 }
