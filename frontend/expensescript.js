@@ -28,7 +28,7 @@ const limit = 3 ;
     limit : limit 
   }
   });
-    
+
     
     for (let i = 0; i < response.data.details.length; i++) {
       showexpensedetail(response.data.details[i]);
@@ -71,6 +71,7 @@ try {
   const result =  axios.post('http://localhost:3800/expense/postexpense' , user_data, {headers : {"Authorization" : token} })
   
     console.log("succesfully posted") ;
+    li.remove() ;
     showdetails() ;
     
   
@@ -87,11 +88,11 @@ catch(err) {
 async function showexpensedetail(details) {
   try {
     
-    
     const li = document.createElement('li');
+    
     li.className = 'list-group-item d-flex justify-content-between align-items-center';
    // li.id = details.id ;
-  
+   
     const contentWrapper = document.createElement('div');
     const category = document.createElement('span');
     category.className = 'fw-bold';

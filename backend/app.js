@@ -2,8 +2,9 @@ const Express = require('express') ;
 const bodyparser = require('body-parser') ;
 const cors = require('cors') 
 //require('dotenv').config() ;
-const sequelize = require('./util/table')
-
+const sequelize = require('./util/table') ;
+const helmet = require('helmet') ;
+const compression = require('compression') ;
 const expenseroute = require('./router/expenseroute')
 const userroute = require('./router/userroute') ;
 const orderroute = require('./router/premiumroute') ;
@@ -24,7 +25,8 @@ app.use(cors({
     origin : '*'
 })) ;
 
-
+app.use(helmet()) ;
+app.use(compression()) ;
 app.use('/expense' , expenseroute) ;
 app.use('/user' , userroute) ;
 app.use('/premium' ,orderroute ) ;
