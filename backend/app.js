@@ -51,7 +51,7 @@ ordermodel.belongsTo(usermodel) ;
          }) 
         }
         catch(err) {
-            await res.status(500) ;
+        
             console.log(err) ;
         }
     }  
