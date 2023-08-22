@@ -8,8 +8,8 @@ router.post('/postexpense' , auth.authenticate, expense.postData) ;
 
 router.get('/getexpense' , auth.authenticate ,expense.getData) ;
 
-router.delete('/deleteexpense/:id', auth.authenticate , expense.deletedata) ; 
+router.delete('/deleteexpense/:id', auth.authenticate , expense.deleteData) ; 
 router.get('/download' , auth.authenticate , expense.postFile  ) ;
-router.get('/gettotal' , auth.authenticate , expense.usertotaldata) ;
+router.get('/gettotal' , auth.authenticate , expense.userTotalData) ;
 
 module.exports = router ;

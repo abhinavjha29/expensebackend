@@ -36,7 +36,7 @@ exports.savedata = async (req , res , next)=>{
 exports.GetData = async (req , res, next)=>{
     try {
      
-        const users = await User.findAll() 
+        const users = await User.find() 
         res.status(200).json({getdata : users}) ;
 
     }
@@ -50,15 +50,15 @@ exports.postLoginData = async (req , res , next) =>{
        const {email , password} = req.body ;
      console.log("ans is " +email) ;
     
-    const reqdata = await User.findAll({where : {email}}) ;
+    const reqdata = await User.findOne({email}) ;
     //console.log(reqdata) ;
-    if ( reqdata.length==0) {
+    if ( !reqdata) {
         return res.status(404).json({ success : false, messege : "user not found"})
     }
-    if(reqdata.length>0) {
-       bcrypt.compare( password , reqdata[0].password , (err , result)=>{
+    if(reqdata) {
+       bcrypt.compare( password , reqdata.password , (err , result)=>{
             console.log(password +"main") ;
-            console.log(reqdata[0].password) ;
+            console.log(reqdata.password) ;
             if(err) {
                 console.log(err) ;
                 return res.status(500).json({messege : "something went wrong"})
@@ -71,7 +71,7 @@ exports.postLoginData = async (req , res , next) =>{
             }
                    else { 
                     console.log("true") ;
-        return res.status(200).json({success : true , messege : "user logged succesfully" , token: generateaccesstoken(reqdata[0].id)})
+        return res.status(200).json({success : true , messege : "user logged succesfully" , token: generateaccesstoken(reqdata.id)})
        }
         })
 
