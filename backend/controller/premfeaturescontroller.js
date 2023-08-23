@@ -17,9 +17,11 @@ exports.leaderboard  = async (req , res , next)=>{
         //     group : ['id'] ,
         //     order : [['total_exp' , 'DESC']]
         // }) ;
-const users = await User.findAll({
-    order : [['total_exp' , 'DESC']]
-})
+// const users = await User.find({
+//     order : [['total_exp' , 'DESC']]
+// })
+const users = await User.find().sort({ total_exp: -1 });
+
         
        
 

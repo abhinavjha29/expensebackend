@@ -34,15 +34,7 @@ const limit = 3 ;
       showexpensedetail(response.data.details[i]);
       
     }
-//     const paginationData = {
-//       currentPage: response.data.currentPage,
-//       hasnextpage: response.data.hasnextpage,
-//       nextpage: response.data.nextpage,
-//       haspreviouspage: response.data.haspreviouspage,
-//       previouspage: response.data.previouspage,
-//       lastpage: response.data.lastpage
-//     };
-//     showpagination(paginationData) ;
+
   } catch (error) {
     console.log(error);
   }
@@ -113,7 +105,8 @@ async function showexpensedetail(details) {
   
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'btn btn-danger btn-sm del-btn';
-    deleteBtn.id = details.id;
+    console.log(JSON.stringify(details)+"detail is")
+    deleteBtn.id = details._id;
     deleteBtn.appendChild(document.createTextNode('Delete'));
   
     li.appendChild(deleteBtn);
@@ -341,51 +334,19 @@ catch(err) {
 
 
 
-// async function showpagination( {
-// currentPage ,
-// hasnextpage ,
-// nextpage ,
-// haspreviouspage ,
-// previouspage ,
-// lastpage}) {
-  
 
-//   pagination.innerHTML = "" ;
-
-  
-//   if(haspreviouspage) {
-//     const btn2 = document.createElement('button') ;
-//     btn2.innerHTML = previouspage ;
-//     btn2.addEventListener('click' , ()=>showdetails(previouspage))
-//     pagination.appendChild(btn2) ;
-//   }
-//   const btn1 = document.createElement('button') ;
-//   btn1.innerHTML = `<h3>${currentPage}</h3>`
-//   btn1.addEventListener('click' , ()=>showdetails(currentPage))
-//   pagination.appendChild(btn1) ;
-
-//   if(hasnextpage) {
-//     const btn3 = document.createElement('button') ;
-//     btn3.innerHTML = nextpage ;
-//     btn3.addEventListener('click' , ()=>{ 
-//       console.log(nextpage)
-//       showdetails(nextpage)})
-//     pagination.appendChild(btn3) ;
-//   }
-// }
 
 async function totalcount() {
   let token = localStorage.getItem("token");
-  axios
-    .get(`http://localhost:3800/expense/gettotal`, {
+  axios.get(`http://localhost:3800/expense/gettotal`, {
       headers: { authorization: token },
     })
     .then((result) => {
       let k = 3;
 console.log( "result is "+JSON.stringify(result.data)) ;
 
-      let j = Math.trunc((result.data.totalexp / k) + 1);
-      console.log(k);
+      let j = Math.trunc((result.data.totalExp / k) + 1);
+      console.log(j);
 
       for (let i = 0; i < j; i++) {
         pag.innerHTML += `<button class="allbtns" id="page=${c++}&limit=${k}">${cc++}</button> `;
@@ -397,7 +358,9 @@ pag.addEventListener('click' , async(e)=>{
   console.log(e.target.id) ;
 if(e.target.id) {
  const token = localStorage.getItem('token') ;
- const response = await axios.get(`http://localhost:3800/expense/getexpense?${e.target.id}` , {headers : {"Authorization" : token} }); 
+ const response = await axios.get(`http://localhost:3800/expense/getexpense?${e.target.id}` , {headers : {"Authorization" : token} });
+ const ul = document.getElementById('item') ;
+ ul.innerHTML = "" ; 
  for (let i = 0; i < response.data.details.length; i++) {
   showexpensedetail(response.data.details[i]);
   

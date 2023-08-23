@@ -24,7 +24,7 @@ btn.addEventListener('click' ,saveuserdetail) ;
 
 async function gotologin(e) {
 e.preventDefault() ;
-window.location.href = 'http://127.0.0.1:5501/frontend/login.html'
+window.location.href = 'http://localhost:3800/login.html'
 
 }
 const loginbtn = document.getElementById('loginpage') ; 
